@@ -1,7 +1,7 @@
 const copyButton = document.createElement("button");
 const lang = document.querySelector(".lang-ja");
 const parts = lang.querySelectorAll(".part");
-const buttonText = "問題をコピー"
+const buttonText = "問題をコピー";
 
 copyButton.innerHTML = buttonText;
 
@@ -15,10 +15,22 @@ copyButton.style.display = "block"; // インラインブロック
 copyButton.classList.add("btn-copy"); // クラス追加
 
 copyButton.onclick = function () {
-  const problemNode = parts[0].cloneNode(true);
-  problemNode
-    .querySelectorAll("h3,.katex-mathml")
-    .forEach((ele) => ele.remove());
+  const dupParts = Array.from(parts).map((part) => part.cloneNode(true));
+  dupParts.forEach((element) => {
+    element.querySelectorAll(".katex-mathml").forEach((ele) => ele.remove());
+  });
+
+  dupParts.forEach((element) => {
+    const vlistElements = element.querySelectorAll(".vlist-t");
+    vlistElements.forEach((vlistElement) => {
+      if (vlistElement.classList.length === 1) {
+        vlistElement.innerText = "**" + vlistElement.innerText;
+      }
+    });
+  });
+
+  const problemNode = dupParts[0].cloneNode(true);
+  problemNode.querySelector("h3").remove(); /* 問題文のh3タグを削除 */
 
   const formattedProblemText = problemNode.innerText
     .replace(/^配点 : \d+ 点\n/, "") // 配点を削除
@@ -40,17 +52,13 @@ copyButton.onclick = function () {
     .replace(/。/g, "。\n") // 句点の後の改行を2つにする
     .replace(/。\n(?=\))/g, "。"); // 句点の後に)がある場合は、改行を入れない
 
-  const partsOne = parts[1].cloneNode(true);
-  partsOne.querySelectorAll(".katex-mathml").forEach((ele) => ele.remove());
+  const formattedConstraintsText = dupParts[1].innerText.replace(
+    /制約/,
+    "\n制約",
+  ); // 制約の前の改行を残す
 
-  const formattedConstraintsText = partsOne.innerText.replace(/制約/, "\n制約"); // 制約の前の改行を残す
-
-  const partsArray = Array.prototype.slice.call(parts);
-  const sampleNodes = partsArray.slice(2).map((part) => part.cloneNode(true));
-  sampleNodes.forEach((sample) =>
-    sample.querySelectorAll(".katex-mathml").forEach((ele) => ele.remove()),
-  );
-  const samples = sampleNodes
+  const samples = dupParts
+    .slice(2)
     .map((part) => part.innerText.replace(/。\n\n/g, "。\n"))
     .join("");
 
