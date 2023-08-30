@@ -1,5 +1,7 @@
 const copyButton = document.createElement("button");
-const lang = document.querySelector(".lang-ja");
+const lang =
+  document.querySelector(".lang-ja") ||
+  document.getElementById("task-statement");
 const parts = lang.querySelectorAll(".part");
 const buttonText = "問題をコピー";
 
@@ -75,10 +77,9 @@ copyButton.onclick = function () {
     .replace(/## \n/g, "## "); // ##の後に文字列がない場合は、末尾の改行を削除
 
   const valueText =
-    `${formattedProblemText}\n${formattedConstraintsText}\n${formattedSamples}`.replace(
-      /\n\n+/g,
-      "\n\n",
-    );
+    `${formattedProblemText}\n${formattedConstraintsText}\n${formattedSamples}`
+      .replace(/\n\n+/g, "\n\n")
+      .replace(/\t/g, "");
   const textArea = document.createElement("textarea");
   textArea.value = valueText;
   document.body.appendChild(textArea);
