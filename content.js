@@ -27,10 +27,13 @@ copyButton.onclick = function () {
         vlistElement.innerText = "**" + vlistElement.innerText;
       }
     });
+    const h3Elements = element.querySelectorAll("h3");
+    h3Elements.forEach((h3Element) => {
+      h3Element.innerText = "## " + h3Element.innerText;
+    });
   });
 
   const problemNode = dupParts[0].cloneNode(true);
-  problemNode.querySelector("h3").remove(); /* 問題文のh3タグを削除 */
 
   const formattedProblemText = problemNode.innerText
     .replace(/^配点 : \d+ 点\n/, "") // 配点を削除
@@ -50,11 +53,12 @@ copyButton.onclick = function () {
     .replace(/(\W) /g, "$1") // 記号の後の空白を削除
     .replace(/ (\W)/g, "$1") // 記号の前の空白を削除
     .replace(/。/g, "。\n") // 句点の後の改行を2つにする
-    .replace(/。\n(?=\))/g, "。"); // 句点の後に)がある場合は、改行を入れない
+    .replace(/。\n(?=\))/g, "。") // 句点の後に)がある場合は、改行を入れない
+    .replace(/##問題文/, "## 問題文\n"); // 問題文の後の改行を残す
 
   const formattedConstraintsText = dupParts[1].innerText.replace(
-    /制約/,
-    "\n制約",
+    /## 制約/,
+    "\n## 制約",
   ); // 制約の前の改行を残す
 
   const samples = dupParts
@@ -67,7 +71,8 @@ copyButton.onclick = function () {
     .replace(/出力例 (\d)/g, "\n出力例 $1\n") // 出力例の前の改行を残す
     .replace(/Copy/g, "") // Copyを削除
     .replace(/  /g, "\n") // 2つ以上の空白を1つにする
-    .replace(/。\n\n/g, "。\n"); // 句点の後の改行を2つにする
+    .replace(/。\n\n/g, "。\n") // 句点の後の改行を2つにする
+    .replace(/## \n/g, "## "); // ##の後に文字列がない場合は、末尾の改行を削除
 
   const valueText =
     `${formattedProblemText}\n${formattedConstraintsText}\n${formattedSamples}`.replace(
