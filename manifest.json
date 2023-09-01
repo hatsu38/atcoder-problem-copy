@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "AtCoder Copy Button",
-  "version": "1.0",
+  "version": "1.0.1",
   "description": "Add a copy button to AtCoder problem pages",
   "permissions": ["activeTab"],
   "icons": {
